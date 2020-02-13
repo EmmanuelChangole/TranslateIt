@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "519977128796",
+    "firebase_url": "https://translateit-f648c.firebaseio.com",
+    "project_id": "translateit-f648c",
+    "storage_bucket": "translateit-f648c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519977128796:android:977b64c739d8c5897c2799",
+        "android_client_info": {
+          "package_name": "com.translateit.translateit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519977128796-68kppmfva0omcdos106l56trn7al140u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.translateit.translateit",
+            "certificate_hash": "5d61b66f74a366528e3b7f2c7f60cbf3bec301dc"
+          }
+        },
+        {
+          "client_id": "519977128796-bakdf2dsh5jmd9kmcu0mf626r8d0jdbb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbhV30hcN9FtsnO_XizedxpqVFv1uyk7M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519977128796-bakdf2dsh5jmd9kmcu0mf626r8d0jdbb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

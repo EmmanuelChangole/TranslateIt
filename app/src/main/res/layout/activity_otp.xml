@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ActivityOtp">
+
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/colorGreen"
+        android:layout_centerInParent="true"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        app:cardCornerRadius="6dp"
+        android:elevation="3dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout2"
+                android:layout_above="@id/tvResend"
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true">
+
+
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tvOtpDetails"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="Roboto"
+                    android:text="@string/otp_message"
+                    android:textSize="10dp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
+                    />
+
+                <com.chaos.view.PinView
+                    android:layout_below="@id/tvOtpDetails"
+                    android:id="@+id/pinView"
+                    style="@style/PinWidget.PinView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/colorWhite"
+                    android:inputType="number"
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    app:itemCount="6"
+                    app:itemHeight="48dp"
+                    app:itemRadius="10dp"
+                    app:lineColor="@color/colorWhite"
+                    app:viewType="rectangle"
+                    android:layout_centerHorizontal="true"
+
+                    />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/tvResend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/colorWhite"
+                    android:text="Didn't get the OTP? RESEND OTP."
+
+
+
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/butSubmit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Done"
+                    >
+
+                </Button>
+
+              <!--  <Button
+
+                    android:id="@+id/butSubmit"
+                    android:layout_width="250dp"
+                    android:layout_height="70dp"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorGreen"
+                    android:background="@drawable/bt_shape_2"
+                    android:stateListAnimator="@drawable/state_list_animator_z"
+                    android:layout_marginTop="10dp"
+                    android:textAllCaps="false"
+                    android:text="Done"
+
+
+                    />-->
+
+            </RelativeLayout>
+
+
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

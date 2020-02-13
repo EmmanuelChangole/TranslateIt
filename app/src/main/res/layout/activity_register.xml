@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.RegisterActivity">
+
+    <RelativeLayout
+        android:layout_above="@id/relativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+           <!--Logo image-->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+
+        android:id="@+id/relativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_above="@id/relativeLayout1"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_marginBottom="20dp"
+            android:background="@color/colorBrown"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:id="@+id/tv_logo"
+            android:textStyle="bold"
+            android:fontFamily="Roboto"
+            android:textSize="10pt"
+            android:textColor="@color/colorBlack"
+            android:text="WELCOME TO"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:id="@+id/tvLogo"
+            android:layout_below="@id/tv_logo"
+            android:textStyle="bold"
+            android:fontFamily="Roboto"
+            android:textSize="10pt"
+            android:textColor="@color/colorBlack"
+            android:text="Translate it"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        android:id="@+id/relativeLayout1"
+        android:layout_height="50dp">
+
+
+
+
+        <com.hbb20.CountryCodePicker
+
+            android:id="@+id/countryCodeHolder"
+            android:layout_marginLeft="4dp"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            app:ccp_defaultNameCode="KE"
+            app:ccp_customMasterCountries="KE,TZ,UG"/>
+
+        <EditText
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:textColor="@color/colorBlack"
+            android:inputType="number" android:id="@+id/edNumber"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:hint="@string/edNumber_hint"
+            android:background="@null"
+            android:layout_toRightOf="@id/countryCodeHolder"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorBrown" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorBrown" />
+
+
+    </RelativeLayout>
+    <View
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/butRegister"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorGreen"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/butRegister"
+        android:textAllCaps="false"
+        android:text="@string/button_register"
+        android:layout_height="70dp"/>
+
+
+</RelativeLayout>

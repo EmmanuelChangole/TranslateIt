@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TranslateIt</string>
+    <string name="Yandex_Api">trnsl.1.1.20200208T095225Z.7b3d47dc71ae6347.16d71d4281b1b61d56f6b18ed7752dc5058433c3</string>
+    <string name="edNumber_hint">Enter your number</string>
+    <string name="button_register">Go</string>
+    <string name="edNumber_error">Enter a valid number</string>
+    <string name="intent_number">number</string>
+    <string name="otp_message">Enter six digits sent to you</string>
+    <string name="dbName_users">Users</string>
+    <string name="butDone">Done</string>
+    <string name="tvLanguage">Choose your language</string>
+    <string name="hintUserName">Enter your Username</string>
+    <string name="tvComleteProf">Complete your profile</string>
+</resources>
