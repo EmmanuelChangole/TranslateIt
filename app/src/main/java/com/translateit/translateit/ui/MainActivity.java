@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity
    private ViewPager viewPager;
    private Toolbar toolbar;
    private FireBaseMethods fireBaseMethods;
+   private FloatingActionButton butNewMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -48,6 +53,8 @@ public class MainActivity extends AppCompatActivity
         initWidgets();
         setProfile();
         setChats();
+
+
 
 
     }
@@ -62,6 +69,8 @@ public class MainActivity extends AppCompatActivity
         username = findViewById(R.id.username);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
+        butNewMessage=findViewById(R.id.butNewMessage);
+
 
     }
     private void setProfile()
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                 {
-                    ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                    final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                     int unread = 0;
                     for (DataSnapshot snapshot : dataSnapshot.getChildren())
                     {
@@ -119,10 +128,55 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         viewPagerAdapter.addFragment(new ChatsFragment(), "("+unread+") Chats");
                     }
-                    viewPagerAdapter.addFragment(new TranslateFragment(),"Translate");
 
+                    viewPagerAdapter.addFragment(new TranslateFragment(),"Translate");
+                    butNewMessage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent=new Intent(MainActivity.this,UsersActivity.class);
+                            startActivity(intent);
+                        }
+                    });
 
                     viewPager.setAdapter(viewPagerAdapter);
+                    viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @SuppressLint("RestrictedApi")
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+                        {
+                            if(viewPagerAdapter.getItem(position)instanceof ChatsFragment)
+                            {
+                                butNewMessage.setVisibility(View.VISIBLE);
+                                butNewMessage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent=new Intent(MainActivity.this,UsersActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
+
+                            }
+
+                            else
+                                {
+                                    butNewMessage.setVisibility(View.GONE);
+
+                                }
+
+                        }
+
+                        @Override
+                        public void onPageSelected(int position)
+                        {
+
+
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
+                    });
                     tabLayout.setupWithViewPager(viewPager);
 
                 }
