@@ -22,6 +22,7 @@ import com.translateit.translateit.ui.MainActivity;
 import com.translateit.translateit.R;
 import com.translateit.translateit.models.Chat;
 import com.translateit.translateit.models.User;
+import com.translateit.translateit.ui.MessageActivity;
 
 
 import java.util.List;
@@ -80,7 +81,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, MainActivity.class);
+                Intent intent = new Intent(mContext, MessageActivity.class);
                 intent.putExtra("userid", user.getId());
                 mContext.startActivity(intent);
             }

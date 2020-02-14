@@ -38,8 +38,8 @@ public class ChatsFragment extends Fragment {
     private List<Chatlist> usersList;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
