@@ -31,13 +31,10 @@ import static java.security.AccessController.getContext;
 public class ChatsFragment extends Fragment {
 
     private RecyclerView recyclerView;
-
     private UserAdapter userAdapter;
     private List<User> mUsers;
-
-    FirebaseUser fuser;
-    DatabaseReference reference;
-
+    private FirebaseUser fuser;
+    private DatabaseReference reference;
     private List<Chatlist> usersList;
 
     @Override

@@ -33,15 +33,17 @@ public class MainActivity extends AppCompatActivity
    private CircleImageView profile_image;
    private TextView username;
    private FirebaseUser firebaseUser;
-   private   DatabaseReference reference;
+   private DatabaseReference reference;
    private TabLayout tabLayout;
    private ViewPager viewPager;
    private Toolbar toolbar;
    private FireBaseMethods fireBaseMethods;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         intFireBase();
         initWidgets();
         setProfile();
@@ -58,7 +60,6 @@ public class MainActivity extends AppCompatActivity
 
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
-       // toolbar= findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
 
@@ -66,7 +67,8 @@ public class MainActivity extends AppCompatActivity
     private void setProfile()
     {
         if(fireBaseMethods.onChangeState())
-        { firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        {
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
 
-                        //change this
+
                         Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                     }
                 }
@@ -99,17 +101,20 @@ public class MainActivity extends AppCompatActivity
             reference = FirebaseDatabase.getInstance().getReference("Chats");
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                {
                     ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                     int unread = 0;
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
                         Chat chat = snapshot.getValue(Chat.class);
                         if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()){
                             unread++;
                         }
                     }
 
-                    if (unread == 0){
+                    if (unread == 0)
+                    {
                         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
                     } else {
                         viewPagerAdapter.addFragment(new ChatsFragment(), "("+unread+") Chats");
