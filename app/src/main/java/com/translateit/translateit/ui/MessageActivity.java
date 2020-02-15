@@ -103,6 +103,22 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 notify = true;
                 String msg = text_send.getText().toString();
+                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       User user=dataSnapshot.getValue(User.class);
+                       String Language=user.getLanguage();
+                        Toast.makeText(MessageActivity.this, Language, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
 
 
                          /*Convertion of the message here*/
