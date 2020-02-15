@@ -4,10 +4,16 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBlack">#141414</color>
-    <color name="colorBrown">#A09999</color>
+    <color name="colorBrown">#5A5555</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGreen">#2fa881</color>
     <color name="colorYellow">#FFCC00</color>
     <color name="colorCustomGrey">#c5c5c5</color>
     <color name="colorCardView">#f7f7f7</color>
+    <color name="colorIndivateTab">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_500">#a4a4a4</color>
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_800">#212121</color>
 </resources>

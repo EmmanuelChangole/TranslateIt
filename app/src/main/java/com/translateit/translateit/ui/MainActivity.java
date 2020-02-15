@@ -29,6 +29,8 @@ import com.translateit.translateit.models.User;
 import com.translateit.translateit.utils.FireBaseMethods;
 import com.translateit.translateit.utils.ViewPagerAdapter;
 
+import java.util.HashMap;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
+
                     username.setText(user.getUsername());
                     if (user.getImageURL().equals("default")){
                         profile_image.setImageResource(R.mipmap.ic_launcher);
@@ -168,6 +171,25 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onPageSelected(int position)
                         {
+                            if(viewPagerAdapter.getItem(position)instanceof ChatsFragment)
+                            {
+                                butNewMessage.setVisibility(View.VISIBLE);
+                                butNewMessage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent=new Intent(MainActivity.this,UsersActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
+
+                            }
+
+                            else
+                            {
+                                butNewMessage.setVisibility(View.GONE);
+
+                            }
+
 
 
                         }
@@ -193,6 +215,28 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    private void status(String status){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        reference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
+    }
+
 
 
     private void intFireBase() {

@@ -47,6 +47,8 @@ public class UsersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users);
         intWidgets();
         readUsers();
+       recyclerView.setHasFixedSize(true);
+       recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         search_users.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -69,8 +71,6 @@ public class UsersActivity extends AppCompatActivity {
     {
 
         recyclerView =findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mUsers = new ArrayList<>();
         search_users =findViewById(R.id.search_users);
 

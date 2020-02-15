@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
 
        <androidx.appcompat.widget.Toolbar
@@ -44,12 +44,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_below="@id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
         <androidx.viewpager.widget.ViewPager
+            android:layout_below="@id/appBarLayout"
 
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
@@ -57,7 +54,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
         </androidx.viewpager.widget.ViewPager>
-    </FrameLayout>
+
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

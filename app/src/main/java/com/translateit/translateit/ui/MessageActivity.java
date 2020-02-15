@@ -103,6 +103,8 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 notify = true;
                 String msg = text_send.getText().toString();
+
+
                          /*Convertion of the message here*/
 
 
@@ -302,6 +304,7 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.updateChildren(hashMap);
     }
+
 
     @Override
     protected void onResume() {
