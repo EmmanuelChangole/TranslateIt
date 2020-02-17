@@ -67,7 +67,6 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/colorCustomGrey"
                     >
                     <EditText
                         android:id="@+id/edUserName"
@@ -75,9 +74,8 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hintUserName"
                         android:textSize="13sp"
-                        android:textCursorDrawable="@drawable/bg_input_cursor"
-                        android:background="@drawable/bg_edit_selector"
                         android:paddingBottom="2dp"
+                        android:background="@null"
 
                         />
 
@@ -132,13 +130,13 @@
 
                 >
                 <Button
+                    android:background="@color/colorGreen"
                     android:id="@+id/butComplete"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:textColor="@color/colorCustomGrey"
-                    android:background="@drawable/bg_but_shape"
                     android:text="@string/butDone"
-                    android:stateListAnimator="@drawable/state_list_animator_z"
+
 
 
 

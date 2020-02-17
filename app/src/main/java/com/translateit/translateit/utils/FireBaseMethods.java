@@ -94,8 +94,6 @@ public class FireBaseMethods extends AppCompatActivity {
         mDialog.show();
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
         signWithCredentials(credential);
-        addUser("","","",context);
-
 
     }
 

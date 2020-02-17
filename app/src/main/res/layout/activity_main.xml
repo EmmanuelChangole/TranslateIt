@@ -43,11 +43,18 @@
 
 
     </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:textColor="@color/colorRed"
+        android:layout_centerHorizontal="true"
+        android:text="@string/tvError"
+        android:layout_below="@id/appBarLayout"
+        android:id="@+id/tvError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 
         <androidx.viewpager.widget.ViewPager
             android:layout_below="@id/appBarLayout"
-
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,11 +65,12 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:background="@drawable/ic_add"
         android:id="@+id/butNewMessage"
         android:layout_marginBottom="40dp"
         android:layout_marginRight="20dp"
         android:layout_alignParentRight="true"
-       android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="true"
         android:layout_width="100dp"
         android:layout_height="100dp"/>
 

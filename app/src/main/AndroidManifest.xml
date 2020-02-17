@@ -19,7 +19,9 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".ui.CompleteReg"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".ui.ActivityOtp"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
@@ -34,7 +36,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

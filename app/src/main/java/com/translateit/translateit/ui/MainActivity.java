@@ -27,6 +27,7 @@ import com.translateit.translateit.fragments.TranslateFragment;
 import com.translateit.translateit.models.Chat;
 import com.translateit.translateit.models.User;
 import com.translateit.translateit.utils.FireBaseMethods;
+import com.translateit.translateit.utils.NetworkCheck;
 import com.translateit.translateit.utils.ViewPagerAdapter;
 
 import java.util.HashMap;
@@ -37,12 +38,11 @@ public class MainActivity extends AppCompatActivity
 {
 
    private CircleImageView profile_image;
-   private TextView username;
+   private TextView username,tvError;
    private FirebaseUser firebaseUser;
    private DatabaseReference reference;
    private TabLayout tabLayout;
    private ViewPager viewPager;
-   private Toolbar toolbar;
    private FireBaseMethods fireBaseMethods;
    private FloatingActionButton butNewMessage;
     @Override
@@ -53,8 +53,22 @@ public class MainActivity extends AppCompatActivity
 
         intFireBase();
         initWidgets();
-        setProfile();
-        setChats();
+
+        if(NetworkCheck.isNetworkAvailable(getApplicationContext()))
+        {    tvError.setVisibility(View.GONE);
+            setChats();
+            setProfile();
+
+        }
+        else
+            {
+                tvError.setVisibility(View.VISIBLE);
+
+
+
+
+            }
+
 
 
 
@@ -72,6 +86,8 @@ public class MainActivity extends AppCompatActivity
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         butNewMessage=findViewById(R.id.butNewMessage);
+        tvError=findViewById(R.id.tvError);
+
 
 
     }
@@ -217,24 +233,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void status(String status){
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        if(NetworkCheck.isNetworkAvailable(getApplicationContext()))
+        {
+            reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status", status);
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("status", status);
 
-        reference.updateChildren(hashMap);
+            reference.updateChildren(hashMap);
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        status("online");
+        //status("online");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        status("offline");
+        //status("offline");
     }
 
 
@@ -247,7 +267,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onStart() {
         super.onStart();
-        fireBaseMethods.onChangeState();
+       fireBaseMethods.onChangeState();
 
     }
 
