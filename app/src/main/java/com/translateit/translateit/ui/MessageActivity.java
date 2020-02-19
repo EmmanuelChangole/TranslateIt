@@ -2,7 +2,10 @@ package com.translateit.translateit.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,6 +39,7 @@ import com.translateit.translateit.notifictions.Data;
 import com.translateit.translateit.notifictions.MyResponse;
 import com.translateit.translateit.notifictions.Sender;
 import com.translateit.translateit.notifictions.Token;
+import com.translateit.translateit.utils.QueryUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,11 +50,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.translateit.translateit.utils.GlobalVars.BASE_REQ_URL;
+
 public class MessageActivity extends AppCompatActivity {
 
   private  CircleImageView profile_image;
   private TextView username;
   private FirebaseUser fuser;
+  private String receiverLanguage;
+  private String senderLanuage;
   private DatabaseReference reference;
   private ImageButton btn_send;
   private EditText text_send;
@@ -62,11 +70,13 @@ public class MessageActivity extends AppCompatActivity {
   private String userid;
   private APIService apiService;
   private boolean notify = false;
+  volatile boolean activityRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        activityRunning=true;
 
        /* Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,34 +108,22 @@ public class MessageActivity extends AppCompatActivity {
         userid = intent.getStringExtra("userid");
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
+        getLanguage();
+
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 notify = true;
-                String msg = text_send.getText().toString();
-                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(userid);
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       User user=dataSnapshot.getValue(User.class);
-                       String Language=user.getLanguage();
-                        Toast.makeText(MessageActivity.this, Language, Toast.LENGTH_SHORT).show();
-                    }
+                final String[] msg = {text_send.getText().toString()};
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                    /*Convertion of the message here*/
 
 
+                if (!msg[0].equals(""))
+                {
+                    new TranslateText().execute(msg[0]);
+                    Toast.makeText(MessageActivity.this,receiverLanguage+"  "+senderLanuage,Toast.LENGTH_SHORT).show();
 
-
-                         /*Convertion of the message here*/
-
-
-                if (!msg.equals("")){
-                    sendMessage(fuser.getUid(), userid, msg);
                 } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }
@@ -158,6 +156,63 @@ public class MessageActivity extends AppCompatActivity {
         });
 
         seenMessage(userid);
+    }
+
+    private void getLanguage()
+    {
+                         /*Getting language for a receiver*/
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(userid);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                User user=dataSnapshot.getValue(User.class);
+                String language=user.getLanguage();
+                setReceiverLanguage(language);
+                Toast.makeText(MessageActivity.this,language,Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+                               /*getting language for sender*/
+       FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+         DatabaseReference mref= FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+         mref.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+             {
+                 User user=dataSnapshot.getValue(User.class);
+                 String language=user.getLanguage();
+                 setSenderLanguage(language);
+                 Toast.makeText(MessageActivity.this,language,Toast.LENGTH_SHORT).show();
+
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         });
+
+
+
+    }
+
+    private void setReceiverLanguage(String language)
+    {
+        receiverLanguage=language;
+
+
+    }
+    private void setSenderLanguage(String language)
+    {
+        senderLanuage=language;
+
+
     }
 
     private void seenMessage(final String userid)
@@ -335,5 +390,31 @@ public class MessageActivity extends AppCompatActivity {
         reference.removeEventListener(seenListener);
         status("offline");
         currentUser("none");
+    }
+
+                       /*Class that translate text*/
+    private class TranslateText extends AsyncTask<String,Void,String> {
+        @Override
+        protected String doInBackground(String... input) {
+            if (input[0].isEmpty()) {
+                return "";
+
+            } else {
+
+                Uri baseUri = Uri.parse(BASE_REQ_URL);
+                Uri.Builder uriBuilder = baseUri.buildUpon();
+                uriBuilder.appendPath("translate")
+                        .appendQueryParameter("key", getString(R.string.Yandex_Api))
+                        .appendQueryParameter("lang", senderLanuage + "-" + receiverLanguage)
+                        .appendQueryParameter("text", input[0]);
+                Log.e("String Url ---->", uriBuilder.toString());
+                return QueryUtils.fetchTranslation(uriBuilder.toString());
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            if(activityRunning)
+                sendMessage(fuser.getUid(), userid, result);
+        }
     }
 }
