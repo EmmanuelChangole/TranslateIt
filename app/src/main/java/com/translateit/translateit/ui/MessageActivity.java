@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -61,6 +64,7 @@ public class MessageActivity extends AppCompatActivity {
     private String senderLanuage;
     private DatabaseReference reference;
     private ImageButton btn_send;
+    private ImageButton btn_voice;
     private EditText text_send;
     private MessageAdapter messageAdapter;
     private List<Chat> mchat;
@@ -83,6 +87,43 @@ public class MessageActivity extends AppCompatActivity {
         onSendMessages();// this method listen to a click when send button is clicked
         setReceiverProfile();// this method get the receiver profile i.e name and profile
 
+        text_send.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if(s.length()==0)
+                {
+                    btn_send.setVisibility(View.INVISIBLE);
+                    btn_voice.setVisibility(View.VISIBLE);
+
+
+                }
+                else
+                    {
+                        btn_voice.setVisibility(View.INVISIBLE);
+                        btn_send.setVisibility(View.VISIBLE);
+
+
+                    }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+
+
+
+            }
+        });
+
+
     }
 
     private void setReceiverProfile() {
@@ -94,9 +135,9 @@ public class MessageActivity extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
                 if (user.getImageURL().equals("default")) {
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
+                    profile_image.setImageResource(R.drawable.ic_users);
                 } else {
-                    //and this
+
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
 
@@ -151,7 +192,9 @@ public class MessageActivity extends AppCompatActivity {
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
+        btn_voice=findViewById(R.id.btn_voice);
         text_send = findViewById(R.id.text_send);
+
 
 
     }

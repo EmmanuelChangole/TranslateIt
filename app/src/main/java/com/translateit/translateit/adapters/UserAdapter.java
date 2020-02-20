@@ -54,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
         if (user.getImageURL().equals("default")){
-            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
+            holder.profile_image.setImageResource(R.drawable.ic_users);
         } else {
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
@@ -131,16 +131,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         }
                     }
                 }
+                if(theLastMessage!=null)
+                {
+                    switch (theLastMessage){
+                        case  "default":
+                            last_msg.setText("No Message");
+                            break;
 
-                switch (theLastMessage){
-                    case  "default":
-                        last_msg.setText("No Message");
-                        break;
-
-                    default:
-                        last_msg.setText(theLastMessage);
-                        break;
+                        default:
+                            last_msg.setText(theLastMessage);
+                            break;
+                    }
                 }
+
+
 
                 theLastMessage = "default";
             }
