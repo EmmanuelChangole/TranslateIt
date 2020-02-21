@@ -134,7 +134,7 @@ public class MessageActivity extends AppCompatActivity {
                     status.setText("Online");
 
                 } else {
-                    status.setText("offline");
+                    status.setText(user.getStatus());
                 }
 
 
