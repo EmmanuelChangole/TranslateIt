@@ -30,6 +30,8 @@ import com.translateit.translateit.utils.FireBaseMethods;
 import com.translateit.translateit.utils.NetworkCheck;
 import com.translateit.translateit.utils.ViewPagerAdapter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -234,27 +236,27 @@ public class MainActivity extends AppCompatActivity
 
     private void status(String status){
         if(NetworkCheck.isNetworkAvailable(getApplicationContext()))
-        {
-            reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        { if( fireBaseMethods.onChangeState())
+            {
+                reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("status", status);
+                reference.updateChildren(hashMap);
 
-            HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put("status", status);
-
-            reference.updateChildren(hashMap);
+            }
         }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //status("online");
+        status("online");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //status("offline");
+        status(setCurrentTime());
     }
 
 
@@ -276,5 +278,11 @@ public class MainActivity extends AppCompatActivity
         fireBaseMethods.clearState();
 
 
+    }
+    private String setCurrentTime()
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
+        String format ="Last seen,"+simpleDateFormat.format(new Date());
+        return format;
     }
 }

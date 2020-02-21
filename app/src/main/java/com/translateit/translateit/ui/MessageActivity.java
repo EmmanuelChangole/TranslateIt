@@ -44,9 +44,13 @@ import com.translateit.translateit.notifictions.Sender;
 import com.translateit.translateit.notifictions.Token;
 import com.translateit.translateit.utils.QueryUtils;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -58,7 +62,7 @@ import static com.translateit.translateit.utils.GlobalVars.BASE_REQ_URL;
 public class MessageActivity extends AppCompatActivity {
 
     private CircleImageView profile_image;
-    private TextView username;
+    private TextView username, status;
     private FirebaseUser fuser;
     private String receiverLanguage;
     private String senderLanuage;
@@ -89,35 +93,28 @@ public class MessageActivity extends AppCompatActivity {
 
         text_send.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-                if(s.length()==0)
-                {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
                     btn_send.setVisibility(View.INVISIBLE);
                     btn_voice.setVisibility(View.VISIBLE);
 
 
+                } else {
+                    btn_voice.setVisibility(View.INVISIBLE);
+                    btn_send.setVisibility(View.VISIBLE);
+
+
                 }
-                else
-                    {
-                        btn_voice.setVisibility(View.INVISIBLE);
-                        btn_send.setVisibility(View.VISIBLE);
-
-
-                    }
 
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
-
+            public void afterTextChanged(Editable s) {
 
 
             }
@@ -133,6 +130,14 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                if (user.getStatus().equals("online")) {
+                    status.setText("Online");
+
+                } else {
+                    status.setText("offline");
+                }
+
+
                 username.setText(user.getUsername());
                 if (user.getImageURL().equals("default")) {
                     profile_image.setImageResource(R.drawable.ic_users);
@@ -192,9 +197,9 @@ public class MessageActivity extends AppCompatActivity {
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
-        btn_voice=findViewById(R.id.btn_voice);
+        btn_voice = findViewById(R.id.btn_voice);
         text_send = findViewById(R.id.text_send);
-
+        status = findViewById(R.id.status);
 
 
     }
@@ -423,9 +428,19 @@ public class MessageActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         reference.removeEventListener(seenListener);
-        status("offline");
+        status(setCurrentTime());
         currentUser("none");
     }
+
+    private String setCurrentTime()
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
+        String format ="Last seen,"+simpleDateFormat.format(new Date());
+
+        return format;
+    }
+
+
 
     @Override
     protected void onDestroy() {
