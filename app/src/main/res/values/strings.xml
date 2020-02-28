@@ -12,4 +12,6 @@
     <string name="hintUserName">Enter your Username</string>
     <string name="tvComleteProf">Complete your profile</string>
     <string name="tvError">No internet please ensure you are connect to a network</string>
+    <string name="translate_it">Translate it</string>
+    <string name="welcome_to">WELCOME TO</string>
 </resources>

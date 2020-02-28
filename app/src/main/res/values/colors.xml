@@ -19,6 +19,10 @@
     <color name="colorRed">#FD0606</color>
     <color name="colorFadeBlack">#313131</color>
     <color name="colorBlue">#157AD9</color>
+    <color name="colorLightBlue">#60C0FF</color>
     <color name="chat_box_left">#08B0E4</color>
     <color name="chat_box_right">#d2fad5</color>
+    <color name="colorDark">#142A3B</color>
+    <color name="colorWhiteFade">#F1F6FB</color>
+    <color name="colorWhiteFade2">#ECEEF1</color>
 </resources>

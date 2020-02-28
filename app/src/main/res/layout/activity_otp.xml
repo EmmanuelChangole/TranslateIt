@@ -37,14 +37,11 @@
                     android:layout_marginTop="5dp"
                     android:id="@+id/tvOtpDetails"
                     android:layout_centerHorizontal="true"
-                    android:fontFamily="Roboto"
-                    android:text="@string/otp_message"
-                    android:textSize="10dp"
-                    android:textStyle="bold"
                     android:layout_width="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:textColor="@color/colorWhite"
+                    android:text="@string/otp_message"
                     />
 
                 <com.chaos.view.PinView

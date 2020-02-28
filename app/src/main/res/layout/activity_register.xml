@@ -7,14 +7,6 @@
     tools:context=".ui.RegisterActivity">
 
     <RelativeLayout
-        android:layout_above="@id/relativeLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-           <!--Logo image-->
-
-    </RelativeLayout>
-
-    <RelativeLayout
 
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
@@ -33,9 +25,11 @@
             android:fontFamily="Roboto"
             android:textSize="10pt"
             android:textColor="@color/colorBlack"
-            android:text="WELCOME TO"
+            android:text="@string/welcome_to"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp" />
+
         <TextView
             android:layout_marginLeft="20dp"
             android:id="@+id/tvLogo"
@@ -44,9 +38,10 @@
             android:fontFamily="Roboto"
             android:textSize="10pt"
             android:textColor="@color/colorBlack"
-            android:text="Translate it"
+            android:text="@string/translate_it"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp" />
 
 
 
@@ -69,7 +64,8 @@
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             app:ccp_defaultNameCode="KE"
-            app:ccp_customMasterCountries="KE,TZ,UG"/>
+            app:ccp_customMasterCountries="KE,TZ,UG"
+            android:layout_marginStart="4dp" />
 
         <EditText
             android:layout_centerHorizontal="true"
@@ -81,7 +77,8 @@
             android:hint="@string/edNumber_hint"
             android:background="@null"
             android:layout_toRightOf="@id/countryCodeHolder"
-            />
+            android:autofillHints=""
+            android:layout_toEndOf="@id/countryCodeHolder" />
 
         <View
             android:layout_width="match_parent"

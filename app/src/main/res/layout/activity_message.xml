@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e6e6e6"
+    android:background="@color/colorWhite"
     >
 
     <com.google.android.material.appbar.AppBarLayout
+       android:background="@color/colorDark"
         android:id="@+id/bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -23,6 +24,8 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/colorWhite"
                 android:id="@+id/profile_image"/>
 
             <TextView
@@ -59,11 +62,13 @@
         android:layout_width="match_parent"
         android:padding="5dp"
         android:id="@+id/bottom"
-        android:background="#fff"
+        android:background="@color/colorWhiteFade"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content">
 
         <EditText
+            android:textColor="@color/colorDark"
+            android:textColorHint="@color/colorDark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_send"
