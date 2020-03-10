@@ -89,9 +89,6 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.view_pager);
         butNewMessage=findViewById(R.id.butNewMessage);
         tvError=findViewById(R.id.tvError);
-
-
-
     }
     private void setProfile()
     {
@@ -218,6 +215,8 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                     tabLayout.setupWithViewPager(viewPager);
+                    tabLayout.getTabAt(1).setIcon(R.drawable.ic_translate);
+                    tabLayout.getTabAt(0).setIcon(R.drawable.ic_message);
 
                 }
 

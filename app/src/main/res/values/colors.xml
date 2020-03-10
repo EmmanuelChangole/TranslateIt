@@ -25,4 +25,5 @@
     <color name="colorDark">#142A3B</color>
     <color name="colorWhiteFade">#F1F6FB</color>
     <color name="colorWhiteFade2">#ECEEF1</color>
+    <color name="colorDarkGray">#a2a2a2</color>
 </resources>

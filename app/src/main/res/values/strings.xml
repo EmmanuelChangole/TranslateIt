@@ -14,4 +14,12 @@
     <string name="tvError">No internet please ensure you are connect to a network</string>
     <string name="translate_it">Translate it</string>
     <string name="welcome_to">WELCOME TO</string>
+    <string name="no_internet_connection">No internet</string>
+    <string name="hint_text">Speech</string>
+    <string name="new_translate">Translate</string>
+    <string name="language_pack_missing">Language is missing</string>
+    <string name="language_not_supported">Languag not supported</string>
+    <string name="select_matching_text">Select Matching Text</string>
+    <string name="process_tts">Process text</string>
+    <string name="speech_prompt">Get speech</string>
 </resources>
