@@ -78,9 +78,9 @@ public class TranslateFragment extends Fragment implements TextToSpeech.OnInitLi
     private void initdata()
     {
         if (!isOnline()) {
-            mEmptyTextView.setVisibility(View.VISIBLE);
+
         } else {
-            mEmptyTextView.setVisibility(View.GONE);
+
             //  GET LANGUAGES LIST
             new GetLanguages().execute();
             //  SPEECH TO TEXT
@@ -165,7 +165,7 @@ public class TranslateFragment extends Fragment implements TextToSpeech.OnInitLi
 
     private void intfragmentWidgets()
     {
-        mEmptyTextView =view.findViewById(R.id.empty_view_not_connected);
+
         mSpinnerLanguageFrom = view.findViewById(R.id.spinner_language_from);
         mSpinnerLanguageTo = view.findViewById(R.id.spinner_language_to);
         mButtonTranslate =view.findViewById(R.id.button_translate);         //      Translate button to translate text
@@ -180,8 +180,8 @@ public class TranslateFragment extends Fragment implements TextToSpeech.OnInitLi
         process_tts.setContentView(R.layout.dialog_processing_tts);
         process_tts.setTitle(getString(R.string.process_tts));
         title = (TextView) process_tts.findViewById(android.R.id.title);
-        // title.setSingleLine(false);
         mTextToSpeech = new TextToSpeech(getContext(), this);
+        activityRunning=true;
     }
 
 
