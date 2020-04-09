@@ -53,10 +53,13 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         intFireBase();
         initWidgets();
+        setChats();
+        setProfile();
 
-        if(NetworkCheck.isNetworkAvailable(getApplicationContext()))
+       /* if(NetworkCheck.isNetworkAvailable(getApplicationContext()))
         {    tvError.setVisibility(View.GONE);
             setChats();
             setProfile();
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-            }
+            }*/
 
 
 
@@ -89,6 +92,9 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.view_pager);
         butNewMessage=findViewById(R.id.butNewMessage);
         tvError=findViewById(R.id.tvError);
+        tvError.setVisibility(View.GONE);
+
+
     }
     private void setProfile()
     {
@@ -96,6 +102,7 @@ public class MainActivity extends AppCompatActivity
         {
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+            reference.keepSynced(true);
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -126,6 +133,7 @@ public class MainActivity extends AppCompatActivity
         if(fireBaseMethods.onChangeState())
         {
             reference = FirebaseDatabase.getInstance().getReference("Chats");
+            reference.keepSynced(true);
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot)
@@ -261,6 +269,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private void intFireBase() {
+
         fireBaseMethods = new FireBaseMethods(this);
         fireBaseMethods.initFirebase();
 

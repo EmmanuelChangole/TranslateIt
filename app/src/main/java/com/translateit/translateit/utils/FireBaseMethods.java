@@ -50,6 +50,7 @@ public class FireBaseMethods extends AppCompatActivity {
         mDialog.setTitle("Loading");
         mDialog.setMessage("please wait");
 
+
     }
 
     public void sendVerificationCode(String number) {
@@ -91,9 +92,18 @@ public class FireBaseMethods extends AppCompatActivity {
     };
 
     public void verifyCode(String code) {
-        mDialog.show();
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
-        signWithCredentials(credential);
+        try{
+            mDialog.show();
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
+            signWithCredentials(credential);
+        }
+
+        catch (Exception e)
+        {
+            mDialog.dismiss();
+            Toast.makeText(context,e.getMessage() , Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 

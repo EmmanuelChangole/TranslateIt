@@ -126,6 +126,7 @@ public class MessageActivity extends AppCompatActivity {
     private void setReceiverProfile() {
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+        reference.keepSynced(true);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -167,7 +168,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 if (!msg[0].equals("")) {
                     new TranslateText().execute(msg[0]);
-                    Toast.makeText(MessageActivity.this, receiverLanguage + "  " + senderLanuage, Toast.LENGTH_SHORT).show();
+
 
                 } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
@@ -202,18 +203,19 @@ public class MessageActivity extends AppCompatActivity {
         status = findViewById(R.id.status);
 
 
+
     }
 
     private void getLanguage() {
         /*Getting language for a receiver*/
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+        ref.keepSynced(true);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 String language = user.getLanguage();
                 setReceiverLanguage(language);
-                Toast.makeText(MessageActivity.this, language, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -225,13 +227,14 @@ public class MessageActivity extends AppCompatActivity {
         /*getting language for sender*/
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mref = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        ref.keepSynced(true);
         mref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 String language = user.getLanguage();
                 setSenderLanguage(language);
-                Toast.makeText(MessageActivity.this, language, Toast.LENGTH_SHORT).show();
+
 
             }
 
@@ -258,6 +261,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void seenMessage(final String userid) {
         reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.keepSynced(true);
         seenListener = reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -314,10 +318,12 @@ public class MessageActivity extends AppCompatActivity {
                 .child(userid)
                 .child(fuser.getUid());
         chatRefReceiver.child("id").setValue(fuser.getUid());
+        chatRefReceiver.keepSynced(true);
 
         final String msg = message;
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        reference.keepSynced(true);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -341,6 +347,7 @@ public class MessageActivity extends AppCompatActivity {
         mchat = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.keepSynced(true);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
