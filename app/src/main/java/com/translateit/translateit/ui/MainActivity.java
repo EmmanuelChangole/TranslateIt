@@ -1,14 +1,19 @@
 package com.translateit.translateit.ui;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +52,9 @@ public class MainActivity extends AppCompatActivity
    private ViewPager viewPager;
    private FireBaseMethods fireBaseMethods;
    private FloatingActionButton butNewMessage;
+   private CircleImageView pro_imageView;
+   private ImageView ic_more;
+   private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -54,33 +62,46 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-        intFireBase();
+         intFireBase();
         initWidgets();
         setChats();
         setProfile();
-
-       /* if(NetworkCheck.isNetworkAvailable(getApplicationContext()))
-        {    tvError.setVisibility(View.GONE);
-            setChats();
-            setProfile();
-
-        }
-        else
-            {
-                tvError.setVisibility(View.VISIBLE);
-
-
-
-
-            }*/
-
-
-
+        setOnclick();
 
 
     }
 
+    private void setOnclick()
+    {
 
+        pro_imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Profile image", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ic_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+             setView();
+            }
+        });
+    }
+
+    private void setView()
+    {
+        LayoutInflater myLayout = LayoutInflater.from(this);
+        final View dialogView = myLayout.inflate(R.layout.profile_managment, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(dialogView);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+
+
+    }
 
 
     private void initWidgets()
@@ -93,6 +114,8 @@ public class MainActivity extends AppCompatActivity
         butNewMessage=findViewById(R.id.butNewMessage);
         tvError=findViewById(R.id.tvError);
         tvError.setVisibility(View.GONE);
+        pro_imageView=(CircleImageView)findViewById(R.id.profile_image);
+        ic_more=(ImageView)findViewById(R.id.ic_more);
 
 
     }
@@ -293,4 +316,5 @@ public class MainActivity extends AppCompatActivity
         String format ="Last seen,"+simpleDateFormat.format(new Date());
         return format;
     }
+
 }

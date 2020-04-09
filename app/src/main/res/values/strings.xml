@@ -22,4 +22,6 @@
     <string name="select_matching_text">Select Matching Text</string>
     <string name="process_tts">Process text</string>
     <string name="speech_prompt">Get speech</string>
+    <string name="edit_text">Change your username</string>
+    <string name="but_submit">Submit</string>
 </resources>
