@@ -6,18 +6,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,35 +41,54 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.translateit.translateit.R;
 import com.translateit.translateit.fragments.ChatsFragment;
 import com.translateit.translateit.fragments.TranslateFragment;
 import com.translateit.translateit.models.Chat;
 import com.translateit.translateit.models.User;
+import com.translateit.translateit.notifictions.Data;
 import com.translateit.translateit.utils.FireBaseMethods;
 import com.translateit.translateit.utils.NetworkCheck;
+import com.translateit.translateit.utils.QueryUtils;
 import com.translateit.translateit.utils.ViewPagerAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.translateit.translateit.utils.GlobalVars.BASE_REQ_URL;
+import static com.translateit.translateit.utils.GlobalVars.DEFAULT_LANG_POS;
+import static com.translateit.translateit.utils.GlobalVars.LANGUAGE_CODES;
+
 public class MainActivity extends AppCompatActivity
 {
 
    private CircleImageView profile_image;
+   private  Spinner spinner;
    private TextView username,tvError;
    private FirebaseUser firebaseUser;
    private DatabaseReference reference;
+   private String language;
    private TabLayout tabLayout;
    private ViewPager viewPager;
    private FireBaseMethods fireBaseMethods;
    private FloatingActionButton butNewMessage;
+   volatile boolean activityRunning;
    private CircleImageView pro_imageView;
+    private static final int IMAGE_REQUEST = 1;
    private ImageView ic_more;
-   private User user;
+   private Uri imageUri;
+    private StorageTask uploadTask;
+    StorageReference storageReference;
+   private FirebaseUser fuser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -62,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-         intFireBase();
+        intFireBase();
         initWidgets();
         setChats();
         setProfile();
@@ -98,15 +132,156 @@ public class MainActivity extends AppCompatActivity
         alertDialogBuilder.setView(dialogView);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        spinner=alertDialog.findViewById(R.id.spLanguage);
+        final EditText edUsername=alertDialog.findViewById(R.id.editUserName);
+        Button butSubmit=alertDialog.findViewById(R.id.editSubmit);
+        CircleImageView imgProfile=alertDialog.findViewById(R.id.editProfileImage);
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImage();
+            }
+        });
+          checkNetwork();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                language=LANGUAGE_CODES.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        butSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username=edUsername.getText().toString();
+                Toast.makeText(MainActivity.this, "Updating", Toast.LENGTH_SHORT).show();
+                updateProfile(language,username);
+            }
+        });
+
+
+
+
+
+
 
 
 
     }
 
+    private void openImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null)
+        {
+              imageUri = data.getData();
+
+
+            if (uploadTask != null && uploadTask.isInProgress()){
+                Toast.makeText(this, "Upload in preogress", Toast.LENGTH_SHORT).show();
+            } else {
+                uploadImage();
+            }
+        }
+    }
+
+    private void updateProfile(final String language, final String username)
+    {
+        String userId=FirebaseAuth.getInstance().getUid();
+         final DatabaseReference mReference=FirebaseDatabase.getInstance().
+                 getReference(getString(R.string.dbName_users)).
+                 child(userId);
+
+         ValueEventListener valueEventListener=new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user= dataSnapshot.getValue(User.class);
+                    mReference.child("username").setValue(username);
+                    mReference.child("language").setValue(language);
+
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         };
+
+         mReference.addListenerForSingleValueEvent(valueEventListener);
+
+
+    }
+    private void uploadImage(){
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setMessage("Uploading");
+        pd.show();
+
+        if (imageUri != null){
+            final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+                    +"."+getFileExtension(imageUri));
+
+            uploadTask = fileReference.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()){
+                        throw  task.getException();
+                    }
+
+                    return  fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        String mUri = downloadUri.toString();
+
+                        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("imageURL", ""+mUri);
+                        reference.updateChildren(map);
+
+                        pd.dismiss();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver contentResolver = getApplicationContext().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
 
     private void initWidgets()
     {
-
+          activityRunning=true;
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         tabLayout = findViewById(R.id.tab_layout);
@@ -116,6 +291,9 @@ public class MainActivity extends AppCompatActivity
         tvError.setVisibility(View.GONE);
         pro_imageView=(CircleImageView)findViewById(R.id.profile_image);
         ic_more=(ImageView)findViewById(R.id.ic_more);
+        fuser=FirebaseAuth.getInstance().getCurrentUser();
+
+
 
 
     }
@@ -295,6 +473,7 @@ public class MainActivity extends AppCompatActivity
 
         fireBaseMethods = new FireBaseMethods(this);
         fireBaseMethods.initFirebase();
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
 
     }
 
@@ -315,6 +494,48 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
         String format ="Last seen,"+simpleDateFormat.format(new Date());
         return format;
+    }
+    private void checkNetwork()
+    {
+        NetworkCheck net = new NetworkCheck();
+
+        if (net.isNetworkAvailable(MainActivity.this))
+        {
+            new GetLanguages().execute();
+
+
+
+        } else
+        {
+            Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    private class GetLanguages extends AsyncTask<Void,Void, ArrayList<String>> {
+        @Override
+        protected ArrayList<String> doInBackground(Void... params) {
+            Uri baseUri = Uri.parse(BASE_REQ_URL);
+            Uri.Builder uriBuilder = baseUri.buildUpon();
+            uriBuilder.appendPath("getLangs")
+                    .appendQueryParameter("key",getString(R.string.Yandex_Api))
+                    .appendQueryParameter("ui","en");
+            Log.e("String Url ---->",uriBuilder.toString());
+            return QueryUtils.fetchLanguages(uriBuilder.toString());
+        }
+        @Override
+        protected void onPostExecute(ArrayList<String> result) {
+            if (activityRunning) {
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, result);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
+                //  SET DEFAULT LANGUAGE SELECTIONS
+                spinner.setSelection(DEFAULT_LANG_POS);
+
+            }
+        }
     }
 
 }

@@ -19,29 +19,22 @@
             android:layout_height="2dp"/>
 
         <TextView
-            android:layout_marginLeft="20dp"
-            android:id="@+id/tv_logo"
-            android:textStyle="bold"
-            android:fontFamily="Roboto"
-            android:textSize="10pt"
-            android:textColor="@color/colorBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/welcome_to"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp" />
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:id="@+id/tvLogo"
-            android:layout_below="@id/tv_logo"
-            android:textStyle="bold"
-            android:fontFamily="Roboto"
-            android:textSize="10pt"
+            android:id="@+id/tv_logo"
             android:textColor="@color/colorBlack"
-            android:text="@string/translate_it"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp" />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvLogo"
+                android:layout_below="@id/tv_logo"
+                android:textColor="@color/colorBlack"
+                android:text="@string/translate_it"
+                />
+
+
 
 
 
