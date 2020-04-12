@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -55,7 +56,9 @@ import com.translateit.translateit.utils.FireBaseMethods;
 import com.translateit.translateit.utils.NetworkCheck;
 import com.translateit.translateit.utils.QueryUtils;
 import com.translateit.translateit.utils.ViewPagerAdapter;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,10 +87,11 @@ public class MainActivity extends AppCompatActivity
    private CircleImageView pro_imageView;
     private static final int IMAGE_REQUEST = 1;
    private ImageView ic_more;
-   private Uri imageUri;
+    private Uri imageUri;
     private StorageTask uploadTask;
     StorageReference storageReference;
    private FirebaseUser fuser;
+   private final String SAMPLE_CROPPED_IMAGE="SampleCropImage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -130,12 +134,37 @@ public class MainActivity extends AppCompatActivity
         final View dialogView = myLayout.inflate(R.layout.profile_managment, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(dialogView);
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
         spinner=alertDialog.findViewById(R.id.spLanguage);
         final EditText edUsername=alertDialog.findViewById(R.id.editUserName);
         Button butSubmit=alertDialog.findViewById(R.id.editSubmit);
-        CircleImageView imgProfile=alertDialog.findViewById(R.id.editProfileImage);
+        Button butCancel=alertDialog.findViewById(R.id.editCancel);
+        final CircleImageView imgProfile=alertDialog.findViewById(R.id.editProfileImage);
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.keepSynced(true);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user.getImageURL().equals("default")){
+                    imgProfile.setImageResource(R.drawable.ic_users);
+                } else {
+
+
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(imgProfile);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,8 +187,16 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 String username=edUsername.getText().toString();
-                Toast.makeText(MainActivity.this, "Updating", Toast.LENGTH_SHORT).show();
                 updateProfile(language,username);
+                Toast.makeText(MainActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
+
+        butCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
             }
         });
 
@@ -183,7 +220,35 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
+        if(resultCode==RESULT_OK)
+        {
+            if(requestCode==IMAGE_REQUEST)
+            {
+                final Uri selectedUri=data.getData();
+                if(selectedUri!=null)
+                {
+                    startCrop(selectedUri);
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Error cannot open ucrop", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            else if(requestCode==UCrop.REQUEST_CROP)
+            {
+                handleCropResult(data);
+
+            }
+        }
+        if(requestCode==UCrop.RESULT_ERROR)
+        {
+            handleCropError(data);
+        }
+
+
+
+        /*if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null)
         {
               imageUri = data.getData();
@@ -194,8 +259,69 @@ public class MainActivity extends AppCompatActivity
             } else {
                 uploadImage();
             }
-        }
+        }*/
     }
+
+    private void handleCropError(Intent data)
+    {
+
+    }
+
+    private void handleCropResult(Intent data)
+    {
+        Uri imageURI=UCrop.getOutput(data);
+        imageUri=imageURI;
+        if(imageUri!=null)
+        {
+            Toast.makeText(getApplicationContext(), "Uploading", Toast.LENGTH_SHORT).show();
+            if (uploadTask != null && uploadTask.isInProgress()){
+                Toast.makeText(this, "Upload in preogress", Toast.LENGTH_SHORT).show();
+            } else {
+                uploadImage();
+            }
+
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Error Uploading", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void startCrop(Uri selectedUri)
+    {
+        String destinationFileName=SAMPLE_CROPPED_IMAGE;
+        destinationFileName+=".jpg";
+        UCrop uCrop=UCrop.of(selectedUri,Uri.fromFile(new File(getCacheDir(),destinationFileName)));
+        uCrop.withAspectRatio(1,1);
+       /* uCrop.withAspectRatio(3,4);
+        uCrop.useSourceImageAspectRatio();
+        uCrop.withAspectRatio(2,3);*/
+       uCrop.withMaxResultSize(450,450);
+       uCrop.withOptions(getCropOptions());
+       uCrop.start(MainActivity.this);
+
+
+
+
+
+
+    }
+
+    private UCrop.Options getCropOptions()
+    {
+        UCrop.Options options=new UCrop.Options();
+        options.setCompressionQuality(70);
+        /*options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);*/
+        options.setHideBottomControls(false);
+        options.setFreeStyleCropEnabled(true);
+        options.setStatusBarColor(getResources().getColor(R.color.colorCustomGrey));
+        options.setToolbarColor(getResources().getColor(R.color.colorBlue));
+        options.setToolbarTitle("Crop image");
+         return options;
+    }
+
 
     private void updateProfile(final String language, final String username)
     {

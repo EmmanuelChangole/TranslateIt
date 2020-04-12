@@ -101,9 +101,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/new_translate"
+                android:background="@color/chat_box_left"
                 android:textSize="10dp"
                 android:textColor="@android:color/white"
-                android:background="@drawable/button_shape"/>
+              />
 
         </RelativeLayout>
 

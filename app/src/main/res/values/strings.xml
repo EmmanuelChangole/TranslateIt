@@ -24,4 +24,5 @@
     <string name="speech_prompt">Get speech</string>
     <string name="edit_text">Change your username</string>
     <string name="but_submit">Submit</string>
+    <string name="but_cancel">Cancel</string>
 </resources>

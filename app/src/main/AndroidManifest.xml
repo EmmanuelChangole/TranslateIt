@@ -16,6 +16,10 @@
         android:name=".ui.MyFirebase"
         >
         <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
             android:name=".ui.MessageActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity

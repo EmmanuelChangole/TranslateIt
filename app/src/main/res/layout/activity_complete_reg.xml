@@ -28,13 +28,13 @@
                 android:layout_marginTop="10dp">
 
                 <View
-                    android:layout_width="8dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:background="@color/colorGreen"
+                android:layout_width="8dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:background="@color/colorGreen"
 
-                    />
+                />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
                     android:id="@+id/butComplete"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
-                    android:textColor="@color/colorCustomGrey"
+                    android:textColor="@color/colorWhite"
                     android:text="@string/butDone"
 
 
