@@ -31,11 +31,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.translate.Translate;
+import com.google.api.services.translate.model.LanguagesListResponse;
+import com.google.cloud.translate.Language;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import com.translateit.translateit.R;
 import com.translateit.translateit.utils.QueryUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
@@ -296,12 +304,19 @@ public class TranslateFragment extends Fragment implements TextToSpeech.OnInitLi
         protected String doInBackground(String... input) {
             Uri baseUri = Uri.parse(BASE_REQ_URL);
             Uri.Builder uriBuilder = baseUri.buildUpon();
-            uriBuilder.appendPath("translate")
-                    .appendQueryParameter("key",getString(R.string.Yandex_Api))
-                    .appendQueryParameter("lang",mLanguageCodeFrom+"-"+mLanguageCodeTo)
-                    .appendQueryParameter("text",input[0]);
-            Log.e("String Url ---->",uriBuilder.toString());
-            return QueryUtils.fetchTranslation(uriBuilder.toString());
+           try {
+               uriBuilder.appendQueryParameter("key", getString(R.string.Yandex_Api))
+                       .appendQueryParameter("target", mLanguageCodeTo)
+                       .appendQueryParameter("source",mLanguageCodeFrom)
+                       .appendQueryParameter("q", input[0]);
+               Log.e("String Url ---->", uriBuilder.toString());
+               return QueryUtils.fetchTranslation(uriBuilder.toString());
+           }
+           catch (Exception e)
+           {
+               Log.e("error",e.getMessage());
+               return "";
+           }
         }
         @Override
         protected void onPostExecute(String result) {
@@ -313,25 +328,42 @@ public class TranslateFragment extends Fragment implements TextToSpeech.OnInitLi
     //  SUBCLASS TO GET LIST OF LANGUAGES ON BACKGROUND THREAD
     private class GetLanguages extends AsyncTask<Void,Void, ArrayList<String>>{
         @Override
-        protected ArrayList<String> doInBackground(Void... params) {
+        protected ArrayList<String> doInBackground(Void... params)
+        {
+           try {
+               NetHttpTransport netHttpTransport = new NetHttpTransport();
+               JacksonFactory jacksonFactory = new JacksonFactory();
+               Translate translate = new Translate(netHttpTransport, jacksonFactory, null);
+               LanguagesListResponse response =translate.languages().list().execute();
+               String result = response.getLanguages().toString();
+               Log.e("String Url ---->",result);
+
+           }
+           catch (Exception e)
+           {
+
+
+           }
+
             Uri baseUri = Uri.parse(BASE_REQ_URL);
             Uri.Builder uriBuilder = baseUri.buildUpon();
-            uriBuilder.appendPath("getLangs")
+            uriBuilder.appendPath("languages")
                     .appendQueryParameter("key",getString(R.string.Yandex_Api))
-                    .appendQueryParameter("ui","en");
+                    .appendQueryParameter("target","en");
             Log.e("String Url ---->",uriBuilder.toString());
             return QueryUtils.fetchLanguages(uriBuilder.toString());
         }
         @Override
         protected void onPostExecute(ArrayList<String> result) {
             if (activityRunning) {
+                Log.d("result",result.toString());
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, result);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mSpinnerLanguageFrom.setAdapter(adapter);
-                mSpinnerLanguageTo.setAdapter(adapter);
+               mSpinnerLanguageTo.setAdapter(adapter);
                 //  SET DEFAULT LANGUAGE SELECTIONS
-                mSpinnerLanguageFrom.setSelection(DEFAULT_LANG_POS);
-                mSpinnerLanguageTo.setSelection(DEFAULT_LANG_POS);
+               mSpinnerLanguageFrom.setSelection(DEFAULT_LANG_POS);
+               mSpinnerLanguageTo.setSelection(DEFAULT_LANG_POS);
             }
         }
     }

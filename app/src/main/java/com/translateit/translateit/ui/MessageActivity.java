@@ -168,6 +168,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 if (!msg[0].equals("")) {
                     new TranslateText().execute(msg[0]);
+                    Toast.makeText(MessageActivity.this,msg[0],Toast.LENGTH_LONG).show();
 
 
                 } else {
@@ -472,11 +473,13 @@ public class MessageActivity extends AppCompatActivity {
 
                 Uri baseUri = Uri.parse(BASE_REQ_URL);
                 Uri.Builder uriBuilder = baseUri.buildUpon();
-                uriBuilder.appendPath("translate")
+                uriBuilder
                         .appendQueryParameter("key", getString(R.string.Yandex_Api))
-                        .appendQueryParameter("lang", senderLanuage + "-" + receiverLanguage)
-                        .appendQueryParameter("text", input[0]);
+                        .appendQueryParameter("target",receiverLanguage)
+                        .appendQueryParameter("source",senderLanuage)
+                        .appendQueryParameter("q", input[0]);
                 Log.e("String Url ---->", uriBuilder.toString());
+                Log.e("Translate", "sender:"+senderLanuage+" "+"Receiver:"+receiverLanguage);
                 return QueryUtils.fetchTranslation(uriBuilder.toString());
             }
         }

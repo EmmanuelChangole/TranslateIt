@@ -48,7 +48,7 @@ public class QueryUtils {
     }
 
     //  METHOD TO MAKE HTTP REQUEST AND FETCH JSON OUTPUT
-    private static String makeHttpRequest(URL url) throws IOException {
+    private static String makeHttpRequest(URL url,String method) throws IOException {
         String jsonResponse = "";
         if (url == null) {
             return jsonResponse;
@@ -59,7 +59,7 @@ public class QueryUtils {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
-            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod(method);
             urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
@@ -106,8 +106,22 @@ public class QueryUtils {
         try {
             // Create a JSONObject from the JSON response string
             JSONObject baseJsonResponse = new JSONObject(stringJSON);
-            JSONArray stringArray = baseJsonResponse.getJSONArray("text");
-            translation = stringArray.getString(0);
+            JSONObject responseText=baseJsonResponse.getJSONObject("data");
+            JSONArray respond_array=responseText.getJSONArray("translations");
+            JSONObject final_result= (JSONObject) respond_array.get(0);
+            Log.d("json_result",final_result.get("translatedText").toString());
+            translation=final_result.get("translatedText").toString();
+
+
+
+           // Log.e("message",responseText.);
+          //  JSONObject respond=responseText.optJSONObject("translatedText");
+
+           // JSONArray stringArray = responseText.getJSONArray("translatedText");
+          //  Log.e("message",respond.toString());
+          //  Log.e("message",stringArray.toString());
+
+            //translation = stringArray.getString(0);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the JSON results", e);
         }
@@ -124,11 +138,24 @@ public class QueryUtils {
         try {
             // Create a JSONObject from the JSON response string
             JSONObject baseJsonResponse = new JSONObject(stringJSON);
-            JSONObject baseJsonResponseLangs = baseJsonResponse.optJSONObject("langs");
-            Iterator<String> iter = baseJsonResponseLangs.keys();
+            JSONObject baseJsonResponseLangs = baseJsonResponse.optJSONObject("data");
+            JSONArray languages=baseJsonResponseLangs.getJSONArray("languages");
             LANGUAGE_CODES.clear();
-            while (iter.hasNext()) {
+            for(int i=0;i<languages.length();i++)
+            {
+                JSONObject language=languages.getJSONObject(i);
+                Log.d("json_object",language.get("name").toString());
+                LANGUAGE_CODES.add(language.get("language").toString());
+                languagesList.add(language.get("name").toString());
+
+
+            }
+          //  Iterator<String> iter = baseJsonResponseLangs.keys();
+           // Log.d("next",iter.next());
+         //   LANGUAGE_CODES.clear();
+         /*   while (iter.hasNext()) {
                 String key = iter.next();
+                Log.d("key",key);
                 try {
                     Object value = baseJsonResponseLangs.get(key);
                     languagesList.add(value.toString());
@@ -136,19 +163,21 @@ public class QueryUtils {
                 } catch (JSONException e) {
                     Log.e("QueryUtils", "Problem parsing the JSON results", e);
                 }
-            }
-        } catch (JSONException e) {
+            }*/
+       } catch (JSONException e) {
             Log.e("QueryUtils", "Problem parsing the JSON results", e);
         }
-        return languagesList;
-    }
 
+        return languagesList;
+
+}
     //  PUBLIC METHOD TO FETCH TRANSLATION
     public static String fetchTranslation(String requestUrl) {
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
         try {
-            jsonResponse = makeHttpRequest(url);
+            jsonResponse = makeHttpRequest(url,"POST");
+            Log.d("result_text",jsonResponse.toString());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
@@ -160,10 +189,11 @@ public class QueryUtils {
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
         try {
-            jsonResponse = makeHttpRequest(url);
+            jsonResponse = makeHttpRequest(url,"GET");
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
+
         return extractFromJsonLanguages(jsonResponse);
     }
 }

@@ -129,9 +129,9 @@ public class CompleteReg extends AppCompatActivity {
         protected ArrayList<String> doInBackground(Void... params) {
             Uri baseUri = Uri.parse(BASE_REQ_URL);
             Uri.Builder uriBuilder = baseUri.buildUpon();
-            uriBuilder.appendPath("getLangs")
+            uriBuilder.appendPath("languages")
                     .appendQueryParameter("key",getString(R.string.Yandex_Api))
-                    .appendQueryParameter("ui","en");
+                    .appendQueryParameter("target","en");
             Log.e("String Url ---->",uriBuilder.toString());
             return QueryUtils.fetchLanguages(uriBuilder.toString());
         }

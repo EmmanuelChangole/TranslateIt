@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity
                     imgProfile.setImageResource(R.drawable.ic_users);
                 } else {
 
-
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(imgProfile);
                 }
             }
